@@ -1,4 +1,6 @@
 const express = require('express');
+
+// controllers function 
 const {getAllUsers, getUser, create, deleteUser, update} = 
 require('../controllers/routesControllers')
 

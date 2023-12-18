@@ -27,6 +27,7 @@ app.use((req, res, next) => {
 //routes
 app.use('/api/users', routes)
 app.use('/api/user', userRoutes)
+
 mongoose.connect(mogoAtlas_URI)
 .then(() => {
     app.listen(port, () => {
