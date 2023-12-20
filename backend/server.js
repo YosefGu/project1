@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 // routes
-const routes = require('./routes/routes');
+const notesRoutes = require('./routes/notes');
 const userRoutes = require('./routes/user')
 
 const express = require('express');
@@ -25,7 +25,7 @@ app.use((req, res, next) => {
 });
 
 //routes
-app.use('/api/users', routes)
+app.use('/api/notes', notesRoutes)
 app.use('/api/user', userRoutes)
 
 mongoose.connect(mogoAtlas_URI)

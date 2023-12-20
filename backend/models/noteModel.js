@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
-const documentSchema = new Schema({
+const noteSchema = new Schema({
     name: {
         type: String,
         required: true
@@ -14,7 +14,11 @@ const documentSchema = new Schema({
     phone: {
         type: Number,
         required: true
+    },
+    user_id: {
+        type: String,
+        required : true
     }
 }, { timestamps: true });
 
-module.exports = mongoose.model('document', documentSchema )
+module.exports = mongoose.model('note', noteSchema )

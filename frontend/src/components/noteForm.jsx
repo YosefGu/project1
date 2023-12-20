@@ -1,10 +1,12 @@
 import { useState } from "react"
-import { useUsersContext } from "../hooks/useUsersContext";
+import { useNotesContext } from "../hooks/useNotesContext";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 const apiUri = 'http://localhost:3000'
 
-const UserForm = () => {
-    const { dispatch } = useUsersContext();
+const NoteForm = () => {
+    const { dispatch } = useNotesContext();
+    const { user } = useAuthContext();
 
     const [name, setName] = useState('');
     const [lName, setLastName] = useState('');
@@ -14,14 +16,19 @@ const UserForm = () => {
 
     const haedelSubmit = async (e) => {
         e.preventDefault()
+        
+        if (!user) {
+            setError('You must be logged in');
+            return
+        }
+        const note = {name, lName, phone};
 
-        const user = {name, lName, phone};
-
-        const response = await fetch(`${apiUri}/api/users`, {
+        const response = await fetch(`${apiUri}/api/notes`, {
             method: 'POST',
-            body: JSON.stringify(user),
+            body: JSON.stringify(note),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${user.token}`
             }
         })
         const json = await response.json()
@@ -36,8 +43,8 @@ const UserForm = () => {
             setPhone('');
             setError(null);
             setEmptyFields([])
-            console.log('New user added', json)
-            dispatch({type: 'CREATE_USER', payload: json})
+            console.log('New note added', json)
+            dispatch({type: 'CREATE_NOTE', payload: json})
         }
     }
   return (
@@ -61,11 +68,11 @@ const UserForm = () => {
             className={emptyFields.includes('phone') ? 'error' : ''}
             onChange={(e) => setPhone(e.target.value)}
             />
-            <button>Add user</button>
+            <button>Add note</button>
             {error && <div>{error}</div>}
         </form>
     </>
   )
 }
 
-export default UserForm
+export default NoteForm

@@ -1,40 +1,47 @@
 import React from "react";
 import { useEffect } from "react"
-import { useUsersContext } from "../hooks/useUsersContext";
+import { useNotesContext } from "../hooks/useNotesContext";
+import { useAuthContext } from '../hooks/useAuthContext';
+
 // componenets
-import UserDetailes from "../components/userDetailes";
-import UserForm from "../components/userForm";
+import NoteDetailes from "../components/noteDetailes";
+import NoteForm from "../components/noteForm";
 
 
 const apiUri = 'http://localhost:3000'
 
 const Home = () => {
-  const {users, dispatch} = useUsersContext();
+  const {notes, dispatch} = useNotesContext();
+  const {user} = useAuthContext();
 
   useEffect(() => {
     const fetchUsers = async() => {
-      // const apiuri = process.env.REACT_APP_API_BASE_URL
-      // console.log(apiuri)
-      const response = await fetch(`${apiUri}/api/users`);
+      const response = await fetch(`${apiUri}/api/notes`, {
+        headers: {
+          'Authorization': `Bearer ${user.token}`
+        }
+      });
       const json = await response.json() ;
 
       if (response.ok) {
-        dispatch({type: 'SET_USERS', payload: json})
+        dispatch({type: 'SET_NOTES', payload: json})
       }
     }
-    fetchUsers()
-  },[])
+    if (user) {
+      fetchUsers()
+    }
+  },[dispatch, user])
   return (
     <>
-    <h1>Users</h1>
-    <div style={{width:'90%', display:'flex', flexFlow:'wrap'}}>
-      <div style={{display:'flex', width:'100%', direction:'colomn'}}>
-        {users && users.map((user) => (
-        <UserDetailes key={user._id} user={user}/>
-        ))}
+    <h1>Notes</h1>
+      <div style={{width:'90%', display:'flex', flexFlow:'wrap'}}>
+        <div style={{display:'flex', width:'100%', direction:'colomn'}}>
+          {notes && notes.map((note) => (
+            <NoteDetailes key={note._id} note={note}/>
+          ))}
         </div>
-        <UserForm />
-    </div>
+        <NoteForm />
+      </div>
     </>
   )
 }
